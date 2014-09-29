@@ -43,3 +43,7 @@ The characters that have already been typed can be set in a different font. The 
 
 + `#define POPOVER_TEXTCOLOR [NSColor whiteColor]`
 The text color of the matches. If you use `NSPopoverAppearanceMinimal`, you'll want to change this to a darker color
+
+Todo
+===
+I'd like to add the ability to have images for each row. If you have any other comments/suggestions/requests, please let me know!
