@@ -3,7 +3,9 @@ NCRAutocompleteTextView
 
 An NSTextView subclass that implements a popover to autocomplete words.
 
-![Image](http://i.imgur.com/T7U2NPo.png)
+![NSPopoverAppearanceHUD](http://i.imgur.com/T7U2NPo.png)
+
+![NSPopoverAppearanceMinimal](http://i.imgur.com/21eaoDt.png)
 
 Installation
 ===
@@ -31,7 +33,7 @@ The total width of the popover. The height is adjusted dynamically depending on 
 The amount of space between the edge of the popover and the tableview displaying the matches.
 
 + `#define POPOVER_APPEARANCE NSPopoverAppearanceHUD` or `#define POPOVER_APPEARANCE NSPopoverAppearanceMinimal`
-Sets the appearance of the popover. Apple offers two: `NSPopoverAppearanceHUD` is shown in the screenshot and `NSPopoverAppearanceMinimal` is light. You would want to change the font color (see below) to something dark if you use `NSPopoverAppearanceMinimal`.
+Sets the appearance of the popover. Apple offers two: `NSPopoverAppearanceHUD` is dark and `NSPopoverAppearanceMinimal` is light. You would want to change the font color (see below) to something dark if you use `NSPopoverAppearanceMinimal`.
 
 + `#define POPOVER_FONT [NSFont fontWithName:@"Menlo" size:12.0]`
 Sets the font used to display matches. Fixed-width fonts tend to work better.
