@@ -13,6 +13,8 @@ Drag `NCRAutocompleteTextView.h` and `NCRAutocompleteTextView.m` files onto your
 
 Usage
 ===
+Set the property `wordlist` on the `NCRAutocompleteTextView` to an array of words you want to autocomplete. That's it! Note about capitalization: words will match even if they aren't the same case. When a match is selected from the autocomplete popover, the case from the suggestion will replace the case the user typed.
+
 There are several options that are all currently set by `#define`'s at the top of the `.m` file:
 + `#define MAX_RESULTS 10`
 Sets the maximum number of lines of autocomplete suggestions. You can always scroll to see the rest of the matches. A smaller number of matches will shrink the popover window.
