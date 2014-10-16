@@ -3,9 +3,9 @@ NCRAutocompleteTextView
 
 An NSTextView subclass that implements a popover to autocomplete words.
 
-![NSPopoverAppearanceHUD](http://i.imgur.com/T7U2NPo.png)
+![NSPopoverAppearanceHUD](http://i.imgur.com/jypp1UW.png)
 
-![NSPopoverAppearanceMinimal](http://i.imgur.com/21eaoDt.png)
+![NSPopoverAppearanceMinimal](http://i.imgur.com/3v36oFC.png)
 
 Installation
 ===
@@ -14,6 +14,8 @@ Drag `NCRAutocompleteTextView.h` and `NCRAutocompleteTextView.m` files onto your
 Usage
 ===
 Set the property `wordlist` on the `NCRAutocompleteTextView` to an array of words you want to autocomplete. That's it! Note about capitalization: words will match even if they aren't the same case. When a match is selected from the autocomplete popover, the case from the suggestion will replace the case the user typed.
+
+You can (optionally) supply images for word suggestions. Just set the `delegate` property of the `NCRAutocompleteTextView` and implement the method `-(NSImage *)imageForWord:(NSString *)word` in your delegate. The `word` parameter is the full word that is suggested in the autocomplete popover. You just need to return the appropiate image. See the example project.
 
 There are several options that are all currently set by `#define`'s at the top of the `.m` file:
 + `#define MAX_RESULTS 10`
@@ -46,6 +48,11 @@ The characters that have already been typed can be set in a different font. The 
 + `#define POPOVER_TEXTCOLOR [NSColor whiteColor]`
 The text color of the matches. If you use `NSPopoverAppearanceMinimal`, you'll want to change this to a darker color
 
-Todo
-===
-I'd like to add the ability to have images for each row. If you have any other comments/suggestions/requests, please let me know!
++ `#define IMAGE_ORIGIN_X_OFFSET 5`
+The number of px that the image is moved over to the right. When the image is moved, it moves the text to the right as well. This has the effect of left padding for the entire cell.
+
++ `#define IMAGE_ORIGIN_Y_OFFSET -2`
+The number of px that the image is moved down. If it's negative, the image gets moved up. You will want to change this value to get the image and text to line up, depending on the size of the images. It would be possible to find a good value for this algorithmically, but for now it's easy to make manual adjustments.
+
++ `#define IMAGE_PADDING 3`
+The number of pixels between the image and text.
