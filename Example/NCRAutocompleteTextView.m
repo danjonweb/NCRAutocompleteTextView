@@ -8,6 +8,7 @@
 
 #import "NCRAutocompleteTextView.h"
 
+
 #define MAX_RESULTS 10
 
 #define HIGHLIGHT_COLOR [NSColor colorWithCalibratedRed:0.474 green:0.588 blue:0.743 alpha:1]
@@ -21,15 +22,76 @@
 //#define POPOVER_APPEARANCE NSPopoverAppearanceMinimal
 
 #define POPOVER_FONT [NSFont fontWithName:@"Menlo" size:12.0]
-#define POPOVER_BOLDFONT [NSFont fontWithName:@"Menlo-Bold" size:13.0] // The font for the characters that have already been typed
+// The font for the characters that have already been typed
+#define POPOVER_BOLDFONT [NSFont fontWithName:@"Menlo-Bold" size:13.0]
 #define POPOVER_TEXTCOLOR [NSColor whiteColor]
 
+// The amount the image is pushed right
+#define IMAGE_ORIGIN_X_OFFSET 5
+// The amount the image is pushed down
+#define IMAGE_ORIGIN_Y_OFFSET -2
+// The padding between the image and text
+#define IMAGE_PADDING 3
 
-@interface NCAutocompleteTableView : NSTableView
+
+
+#pragma mark -
+
+@interface ImageAndTextCell : NSTextFieldCell
+@property (readwrite, strong) NSImage *image;
+@end
+
+@implementation ImageAndTextCell
+
+- (id)init {
+    self = [super init];
+    if (self) {
+        [self setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
+    }
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)zone {
+    ImageAndTextCell *cell = (ImageAndTextCell *)[super copyWithZone:zone];
+    cell.image = self.image;
+    return cell;
+}
+
+- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    NSRect newCellFrame = cellFrame;
+    
+    if (self.image != nil) {
+        NSSize imageSize = [self.image size];
+        NSRect imageFrame;
+        NSDivideRect(newCellFrame, &imageFrame, &newCellFrame, imageSize.width + IMAGE_ORIGIN_X_OFFSET + IMAGE_PADDING, NSMinXEdge);
+        if ([self drawsBackground]) {
+            [[self backgroundColor] set];
+            NSRectFill(imageFrame);
+        }
+        imageFrame.origin.x += IMAGE_ORIGIN_X_OFFSET;
+        imageFrame.origin.y += IMAGE_ORIGIN_Y_OFFSET;
+        imageFrame.size = imageSize;
+        
+        [self.image drawInRect:imageFrame
+                      fromRect:NSZeroRect
+                     operation:NSCompositeSourceOver
+                      fraction:1.0
+                respectFlipped:YES
+                         hints:nil];
+    }
+    
+    [super drawWithFrame:newCellFrame inView:controlView];
+}
 
 @end
 
-@implementation NCAutocompleteTableView
+#pragma mark -
+
+@interface NCRAutocompleteTableView : NSTableView
+
+@end
+
+@implementation NCRAutocompleteTableView
 
 - (void)highlightSelectionInClipRect:(NSRect)theClipRect {
     NSRange visibleRowIndexes = [self rowsInRect:theClipRect];
@@ -47,9 +109,11 @@
 
 @end
 
+#pragma mark -
+
 @interface NCRAutocompleteTextView ()
 @property (nonatomic, strong) NSPopover *autocompletePopover;
-@property (nonatomic, weak) NCAutocompleteTableView *autocompleteTableView;
+@property (nonatomic, weak) NCRAutocompleteTableView *autocompleteTableView;
 @property (nonatomic, strong) NSMutableArray *matches;
 // Used to highlight typed characters and insert text
 @property (nonatomic, copy) NSString *substring;
@@ -64,11 +128,12 @@
     // Make a table view with 1 column and enclosing scroll view. It doesn't
     // matter what the frames are here because they are set when the popover
     // is displayed
-    NSTableColumn *column1 = [[NSTableColumn alloc] init];
+    NSTableColumn *column1 = [[NSTableColumn alloc] initWithIdentifier:@"text"];
     [column1 setEditable:NO];
     [column1 setWidth:POPOVER_WIDTH - 2 * POPOVER_PADDING];
+    [column1 setDataCell:[[ImageAndTextCell alloc] init]];
 
-    NCAutocompleteTableView *tableView = [[NCAutocompleteTableView alloc] initWithFrame:NSZeroRect];
+    NCRAutocompleteTableView *tableView = [[NCRAutocompleteTableView alloc] initWithFrame:NSZeroRect];
     [tableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
     [tableView setBackgroundColor:[NSColor clearColor]];
     [tableView setRowSizeStyle:NSTableViewRowSizeStyleSmall];
@@ -236,16 +301,25 @@
 }
 
 - (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    NSTextFieldCell *textCell = (NSTextFieldCell *)cell;
-    [textCell setDrawsBackground:NO];
+    ImageAndTextCell *imageAndTextCell = (ImageAndTextCell *)cell;
     
-    NSMutableAttributedString *as = [[NSMutableAttributedString alloc] initWithString:textCell.stringValue attributes:@{NSFontAttributeName:POPOVER_FONT, NSForegroundColorAttributeName:POPOVER_TEXTCOLOR}];
-    [textCell setAttributedStringValue:as];
+    [imageAndTextCell setDrawsBackground:NO];
+    [imageAndTextCell setImage:nil];
+    
+    NSMutableAttributedString *as = [[NSMutableAttributedString alloc] initWithString:imageAndTextCell.stringValue attributes:@{NSFontAttributeName:POPOVER_FONT, NSForegroundColorAttributeName:POPOVER_TEXTCOLOR}];
+    [imageAndTextCell setAttributedStringValue:as];
     
     if (self.substring) {
-        NSRange range = [textCell.stringValue rangeOfString:self.substring options:NSAnchoredSearch|NSCaseInsensitiveSearch];
+        NSRange range = [imageAndTextCell.stringValue rangeOfString:self.substring options:NSAnchoredSearch|NSCaseInsensitiveSearch];
         [as addAttribute:NSFontAttributeName value:POPOVER_BOLDFONT range:range];
-        [textCell setAttributedStringValue:as];
+        [imageAndTextCell setAttributedStringValue:as];
+    }
+    
+    if ([[self delegate] respondsToSelector:@selector(imageForWord:)]) {
+        NSImage *image = [[self delegate] imageForWord:self.matches[row]];
+        if (image) {
+            [imageAndTextCell setImage:image];
+        }
     }
 }
 

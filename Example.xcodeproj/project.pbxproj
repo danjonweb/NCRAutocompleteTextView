@@ -11,20 +11,10 @@
 		05AFD5E819D87555006F5D85 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 05AFD5E719D87555006F5D85 /* AppDelegate.m */; };
 		05AFD5EA19D87555006F5D85 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 05AFD5E919D87555006F5D85 /* Images.xcassets */; };
 		05AFD5ED19D87555006F5D85 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05AFD5EB19D87555006F5D85 /* MainMenu.xib */; };
-		05AFD5F919D87555006F5D85 /* ExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 05AFD5F819D87555006F5D85 /* ExampleTests.m */; };
 		05AFD60519D87573006F5D85 /* NCRAutocompleteTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = 05AFD60419D87573006F5D85 /* NCRAutocompleteTextView.m */; };
 		05AFD60D19D87FD3006F5D85 /* wordlist.txt in Resources */ = {isa = PBXBuildFile; fileRef = 05AFD60C19D87FD3006F5D85 /* wordlist.txt */; };
+		05CC24B719EF811F00AF401F /* flags in Resources */ = {isa = PBXBuildFile; fileRef = 05CC24B619EF811F00AF401F /* flags */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		05AFD5F319D87555006F5D85 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 05AFD5D719D87554006F5D85 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 05AFD5DE19D87555006F5D85;
-			remoteInfo = Example;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		05AFD5DF19D87555006F5D85 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -34,23 +24,14 @@
 		05AFD5E719D87555006F5D85 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		05AFD5E919D87555006F5D85 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		05AFD5EC19D87555006F5D85 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		05AFD5F219D87555006F5D85 /* ExampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		05AFD5F719D87555006F5D85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		05AFD5F819D87555006F5D85 /* ExampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleTests.m; sourceTree = "<group>"; };
 		05AFD60319D87573006F5D85 /* NCRAutocompleteTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NCRAutocompleteTextView.h; sourceTree = "<group>"; };
 		05AFD60419D87573006F5D85 /* NCRAutocompleteTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NCRAutocompleteTextView.m; sourceTree = "<group>"; };
 		05AFD60C19D87FD3006F5D85 /* wordlist.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = wordlist.txt; sourceTree = "<group>"; };
+		05CC24B619EF811F00AF401F /* flags */ = {isa = PBXFileReference; lastKnownFileType = folder; path = flags; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		05AFD5DC19D87555006F5D85 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		05AFD5EF19D87555006F5D85 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -64,7 +45,6 @@
 			isa = PBXGroup;
 			children = (
 				05AFD5E119D87555006F5D85 /* Example */,
-				05AFD5F519D87555006F5D85 /* ExampleTests */,
 				05AFD5E019D87555006F5D85 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -73,7 +53,6 @@
 			isa = PBXGroup;
 			children = (
 				05AFD5DF19D87555006F5D85 /* Example.app */,
-				05AFD5F219D87555006F5D85 /* ExampleTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -84,6 +63,7 @@
 				05AFD5E619D87555006F5D85 /* AppDelegate.h */,
 				05AFD5E719D87555006F5D85 /* AppDelegate.m */,
 				05AFD60C19D87FD3006F5D85 /* wordlist.txt */,
+				05CC24B619EF811F00AF401F /* flags */,
 				05AFD60219D87562006F5D85 /* NCAutocompleteTextView */,
 				05AFD5E919D87555006F5D85 /* Images.xcassets */,
 				05AFD5EB19D87555006F5D85 /* MainMenu.xib */,
@@ -97,23 +77,6 @@
 			children = (
 				05AFD5E319D87555006F5D85 /* Info.plist */,
 				05AFD5E419D87555006F5D85 /* main.m */,
-			);
-			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		05AFD5F519D87555006F5D85 /* ExampleTests */ = {
-			isa = PBXGroup;
-			children = (
-				05AFD5F819D87555006F5D85 /* ExampleTests.m */,
-				05AFD5F619D87555006F5D85 /* Supporting Files */,
-			);
-			path = ExampleTests;
-			sourceTree = "<group>";
-		};
-		05AFD5F619D87555006F5D85 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				05AFD5F719D87555006F5D85 /* Info.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -147,24 +110,6 @@
 			productReference = 05AFD5DF19D87555006F5D85 /* Example.app */;
 			productType = "com.apple.product-type.application";
 		};
-		05AFD5F119D87555006F5D85 /* ExampleTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 05AFD5FF19D87555006F5D85 /* Build configuration list for PBXNativeTarget "ExampleTests" */;
-			buildPhases = (
-				05AFD5EE19D87555006F5D85 /* Sources */,
-				05AFD5EF19D87555006F5D85 /* Frameworks */,
-				05AFD5F019D87555006F5D85 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				05AFD5F419D87555006F5D85 /* PBXTargetDependency */,
-			);
-			name = ExampleTests;
-			productName = ExampleTests;
-			productReference = 05AFD5F219D87555006F5D85 /* ExampleTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -176,10 +121,6 @@
 				TargetAttributes = {
 					05AFD5DE19D87555006F5D85 = {
 						CreatedOnToolsVersion = 6.0.1;
-					};
-					05AFD5F119D87555006F5D85 = {
-						CreatedOnToolsVersion = 6.0.1;
-						TestTargetID = 05AFD5DE19D87555006F5D85;
 					};
 				};
 			};
@@ -197,7 +138,6 @@
 			projectRoot = "";
 			targets = (
 				05AFD5DE19D87555006F5D85 /* Example */,
-				05AFD5F119D87555006F5D85 /* ExampleTests */,
 			);
 		};
 /* End PBXProject section */
@@ -208,15 +148,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				05AFD5EA19D87555006F5D85 /* Images.xcassets in Resources */,
+				05CC24B719EF811F00AF401F /* flags in Resources */,
 				05AFD60D19D87FD3006F5D85 /* wordlist.txt in Resources */,
 				05AFD5ED19D87555006F5D85 /* MainMenu.xib in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		05AFD5F019D87555006F5D85 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -233,23 +167,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		05AFD5EE19D87555006F5D85 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				05AFD5F919D87555006F5D85 /* ExampleTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		05AFD5F419D87555006F5D85 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 05AFD5DE19D87555006F5D85 /* Example */;
-			targetProxy = 05AFD5F319D87555006F5D85 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		05AFD5EB19D87555006F5D85 /* MainMenu.xib */ = {
@@ -361,42 +279,6 @@
 			};
 			name = Release;
 		};
-		05AFD60019D87555006F5D85 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = ExampleTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Contents/MacOS/Example";
-			};
-			name = Debug;
-		};
-		05AFD60119D87555006F5D85 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(DEVELOPER_FRAMEWORKS_DIR)",
-					"$(inherited)",
-				);
-				INFOPLIST_FILE = ExampleTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example.app/Contents/MacOS/Example";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -414,15 +296,6 @@
 			buildConfigurations = (
 				05AFD5FD19D87555006F5D85 /* Debug */,
 				05AFD5FE19D87555006F5D85 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		05AFD5FF19D87555006F5D85 /* Build configuration list for PBXNativeTarget "ExampleTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				05AFD60019D87555006F5D85 /* Debug */,
-				05AFD60119D87555006F5D85 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
