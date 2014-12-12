@@ -1,3 +1,7 @@
+Yosemite Update
+===
+This is pretty broken on 10.10 because cell-based Table Views have been deprecated and some functionality broke in the process. The only real fix is to move over to a view-based Table View, which I'll do when I get the time.
+
 NCRAutocompleteTextView
 =======================
 
