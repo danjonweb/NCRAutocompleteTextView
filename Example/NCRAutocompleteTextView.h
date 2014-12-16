@@ -10,12 +10,12 @@
 
 @protocol NCRAutocompleteTableViewDelegate <NSObject>
 @optional
-- (NSImage *)imageForWord:(NSString *)word;
+- (NSImage *)textView:(NSTextView *)textView imageForCompletion:(NSString *)word;
+- (NSArray *)textView:(NSTextView *)textView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)index;
 @end
 
-@interface NCRAutocompleteTextView : NSTextView <NSTableViewDataSource, NSTableViewDelegate, NSPopoverDelegate>
+@interface NCRAutocompleteTextView : NSTextView <NSTableViewDataSource, NSTableViewDelegate>
 
-@property (nonatomic, strong) NSArray *wordlist;
 @property (nonatomic, weak) id <NCRAutocompleteTableViewDelegate> delegate;
 
 @end

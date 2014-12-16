@@ -11,110 +11,54 @@
 
 #define MAX_RESULTS 10
 
-#define HIGHLIGHT_COLOR [NSColor colorWithCalibratedRed:0.474 green:0.588 blue:0.743 alpha:1]
-#define HIGHLIGHT_RADIUS 4.0
-#define INTERCELL_SPACING NSMakeSize(0, 5.0)
+#define HIGHLIGHT_STROKE_COLOR [NSColor selectedMenuItemColor]
+#define HIGHLIGHT_FILL_COLOR [NSColor selectedMenuItemColor]
+#define HIGHLIGHT_RADIUS 0.0
+#define INTERCELL_SPACING NSMakeSize(20.0, 3.0)
+
+#define WORD_BOUNDARY_CHARS [[NSCharacterSet alphanumericCharacterSet] invertedSet]
 
 #define POPOVER_WIDTH 250.0
-#define POPOVER_PADDING 3.0
+#define POPOVER_PADDING 0.0
 
-#define POPOVER_APPEARANCE NSPopoverAppearanceHUD
-//#define POPOVER_APPEARANCE NSPopoverAppearanceMinimal
+//#define POPOVER_APPEARANCE NSPopoverAppearanceHUD
+#define POPOVER_APPEARANCE NSPopoverAppearanceMinimal
 
 #define POPOVER_FONT [NSFont fontWithName:@"Menlo" size:12.0]
 // The font for the characters that have already been typed
 #define POPOVER_BOLDFONT [NSFont fontWithName:@"Menlo-Bold" size:13.0]
-#define POPOVER_TEXTCOLOR [NSColor whiteColor]
-
-// The amount the image is pushed right
-#define IMAGE_ORIGIN_X_OFFSET 5
-// The amount the image is pushed down
-#define IMAGE_ORIGIN_Y_OFFSET -2
-// The padding between the image and text
-#define IMAGE_PADDING 3
-
-
+#define POPOVER_TEXTCOLOR [NSColor blackColor]
 
 #pragma mark -
 
-@interface ImageAndTextCell : NSTextFieldCell
-@property (readwrite, strong) NSImage *image;
+@interface NCRAutocompleteTableRowView : NSTableRowView
 @end
-
-@implementation ImageAndTextCell
-
-- (id)init {
-    self = [super init];
-    if (self) {
-        [self setFont:[NSFont systemFontOfSize:[NSFont smallSystemFontSize]]];
-    }
-    return self;
-}
-
-- (id)copyWithZone:(NSZone *)zone {
-    ImageAndTextCell *cell = (ImageAndTextCell *)[super copyWithZone:zone];
-    cell.image = self.image;
-    return cell;
-}
-
-- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    NSRect newCellFrame = cellFrame;
-    
-    if (self.image != nil) {
-        NSSize imageSize = [self.image size];
-        NSRect imageFrame;
-        NSDivideRect(newCellFrame, &imageFrame, &newCellFrame, imageSize.width + IMAGE_ORIGIN_X_OFFSET + IMAGE_PADDING, NSMinXEdge);
-        if ([self drawsBackground]) {
-            [[self backgroundColor] set];
-            NSRectFill(imageFrame);
-        }
-        imageFrame.origin.x += IMAGE_ORIGIN_X_OFFSET;
-        imageFrame.origin.y += IMAGE_ORIGIN_Y_OFFSET;
-        imageFrame.size = imageSize;
-        
-        [self.image drawInRect:imageFrame
-                      fromRect:NSZeroRect
-                     operation:NSCompositeSourceOver
-                      fraction:1.0
-                respectFlipped:YES
-                         hints:nil];
-    }
-    
-    [super drawWithFrame:newCellFrame inView:controlView];
-}
-
-@end
-
-#pragma mark -
-
-@interface NCRAutocompleteTableView : NSTableView
-
-@end
-
-@implementation NCRAutocompleteTableView
-
-- (void)highlightSelectionInClipRect:(NSRect)theClipRect {
-    NSRange visibleRowIndexes = [self rowsInRect:theClipRect];
-    NSIndexSet *selectedRowIndexes = [self selectedRowIndexes];
-    NSUInteger endRow = visibleRowIndexes.location + visibleRowIndexes.length;
-    for (NSInteger row=visibleRowIndexes.location; row<endRow; row++) {
-        if ([selectedRowIndexes containsIndex:row]) {
-            NSRect rowRect = NSInsetRect([self rectOfRow:row], 0, 0);
-            NSBezierPath *path = [NSBezierPath bezierPathWithRoundedRect:rowRect xRadius:HIGHLIGHT_RADIUS yRadius:HIGHLIGHT_RADIUS];
-            [HIGHLIGHT_COLOR set];
-            [path fill];
-        }
+@implementation NCRAutocompleteTableRowView
+- (void)drawSelectionInRect:(NSRect)dirtyRect {
+    if (self.selectionHighlightStyle != NSTableViewSelectionHighlightStyleNone) {
+        NSRect selectionRect = NSInsetRect(self.bounds, 0.5, 0.5);
+        [HIGHLIGHT_STROKE_COLOR setStroke];
+        [HIGHLIGHT_FILL_COLOR setFill];
+        NSBezierPath *selectionPath = [NSBezierPath bezierPathWithRoundedRect:selectionRect xRadius:HIGHLIGHT_RADIUS yRadius:HIGHLIGHT_RADIUS];
+        [selectionPath fill];
+        [selectionPath stroke];
     }
 }
-
+- (NSBackgroundStyle)interiorBackgroundStyle {
+    if (self.isSelected) {
+        return NSBackgroundStyleDark;
+    } else {
+        return NSBackgroundStyleLight;
+    }
+}
 @end
 
 #pragma mark -
 
 @interface NCRAutocompleteTextView ()
 @property (nonatomic, strong) NSPopover *autocompletePopover;
-@property (nonatomic, weak) NCRAutocompleteTableView *autocompleteTableView;
-@property (nonatomic, strong) NSMutableArray *matches;
+@property (nonatomic, weak) NSTableView *autocompleteTableView;
+@property (nonatomic, strong) NSArray *matches;
 // Used to highlight typed characters and insert text
 @property (nonatomic, copy) NSString *substring;
 // Used to keep track of when the insert cursor has moved so we
@@ -131,10 +75,9 @@
     NSTableColumn *column1 = [[NSTableColumn alloc] initWithIdentifier:@"text"];
     [column1 setEditable:NO];
     [column1 setWidth:POPOVER_WIDTH - 2 * POPOVER_PADDING];
-    [column1 setDataCell:[[ImageAndTextCell alloc] init]];
 
-    NCRAutocompleteTableView *tableView = [[NCRAutocompleteTableView alloc] initWithFrame:NSZeroRect];
-    [tableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleSourceList];
+    NSTableView *tableView = [[NSTableView alloc] initWithFrame:NSZeroRect];
+    [tableView setSelectionHighlightStyle:NSTableViewSelectionHighlightStyleRegular];
     [tableView setBackgroundColor:[NSColor clearColor]];
     [tableView setRowSizeStyle:NSTableViewRowSizeStyleSmall];
     [tableView setIntercellSpacing:INTERCELL_SPACING];
@@ -161,7 +104,6 @@
     self.autocompletePopover = [[NSPopover alloc] init];
     self.autocompletePopover.appearance = POPOVER_APPEARANCE;
     self.autocompletePopover.animates = NO;
-    self.autocompletePopover.delegate = self;
     self.autocompletePopover.contentViewController = contentViewController;
     
     self.matches = [NSMutableArray array];
@@ -171,36 +113,53 @@
 }
 
 - (void)keyDown:(NSEvent *)theEvent {
-    if (self.autocompletePopover.isShown) {
-        NSInteger row = self.autocompleteTableView.selectedRow;
-        if (theEvent.keyCode == 125) {
-            // Down
-            [self.autocompleteTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row+1] byExtendingSelection:NO];
-            [self.autocompleteTableView scrollRowToVisible:self.autocompleteTableView.selectedRow];
-            return;
-        } else if (theEvent.keyCode == 126) {
-            // Up
-            [self.autocompleteTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row-1] byExtendingSelection:NO];
-            [self.autocompleteTableView scrollRowToVisible:self.autocompleteTableView.selectedRow];
-            return;
-        } else if (theEvent.keyCode == 51) {
+    NSInteger row = self.autocompleteTableView.selectedRow;
+    BOOL shouldComplete = YES;
+    switch (theEvent.keyCode) {
+        case 51:
             // Delete
             [self.autocompletePopover close];
-            [super keyDown:theEvent];
-            return;
-        } else if (theEvent.keyCode == 36 || theEvent.keyCode == 48) {
+            shouldComplete = NO;
+            break;
+        case 53:
+            // Esc
+            if (self.autocompletePopover.isShown)
+                [self.autocompletePopover close];
+            return; // Skip default behavior
+        case 125:
+            // Down
+            if (self.autocompletePopover.isShown) {
+                [self.autocompleteTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row+1] byExtendingSelection:NO];
+                [self.autocompleteTableView scrollRowToVisible:self.autocompleteTableView.selectedRow];
+                return; // Skip default behavior
+            }
+            break;
+        case 126:
+            // Up
+            if (self.autocompletePopover.isShown) {
+                [self.autocompleteTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row-1] byExtendingSelection:NO];
+                [self.autocompleteTableView scrollRowToVisible:self.autocompleteTableView.selectedRow];
+                return; // Skip default behavior
+            }
+            break;
+        case 36:
+        case 48:
             // Return or tab
-            [self insert:self];
-            return;
-        } else if (theEvent.keyCode == 49) {
+            if (self.autocompletePopover.isShown) {
+                [self insert:self];
+                return; // Skip default behavior
+            }
+        case 49:
             // Space
-            [self.autocompletePopover close];
-            [super keyDown:theEvent];
-            return;
-        }
+            if (self.autocompletePopover.isShown) {
+                [self.autocompletePopover close];
+            }
+            break;
     }
     [super keyDown:theEvent];
-    [self complete:self];
+    if (shouldComplete) {
+        [self complete:self];
+    }
 }
 
 - (void)insert:(id)sender {
@@ -222,7 +181,7 @@
 - (void)complete:(id)sender {
     NSInteger startOfWord = self.selectedRange.location;
     for (NSInteger i = startOfWord - 1; i >= 0; i--) {
-        if ([self.string characterAtIndex:i] == ' ') {
+        if ([WORD_BOUNDARY_CHARS characterIsMember:[self.string characterAtIndex:i]]) {
             break;
         } else {
             startOfWord--;
@@ -231,7 +190,7 @@
     
     NSInteger lengthOfWord = 0;
     for (NSInteger i = startOfWord; i < self.string.length; i++) {
-        if ([self.string characterAtIndex:i] == ' ') {
+        if ([WORD_BOUNDARY_CHARS characterIsMember:[self.string characterAtIndex:i]]) {
             break;
         } else {
             lengthOfWord++;
@@ -241,23 +200,21 @@
     self.substring = [self.string substringWithRange:NSMakeRange(startOfWord, lengthOfWord)];
     NSRange substringRange = NSMakeRange(startOfWord, self.selectedRange.location - startOfWord);
     
-    if (substringRange.length == 0) {
-        // This happens when we just started a new word--0 characters
+    if (substringRange.length == 0 || lengthOfWord == 0) {
+        // This happens when we just started a new word or if we have already typed the entire word
+        [self.autocompletePopover close];
         return;
     }
     
-    // Find the matches from the wordlist
-    [self.matches removeAllObjects];
-    for (NSString *string in self.wordlist) {
-        if ([string rangeOfString:self.substring options:NSAnchoredSearch | NSCaseInsensitiveSearch range:NSMakeRange(0, [string length])].location != NSNotFound) {
-            [self.matches addObject:string];
-        }
-    }
+    NSInteger index = 0;
+    self.matches = [self completionsForPartialWordRange:substringRange indexOfSelectedItem:&index];
     
     if (self.matches.count > 0) {
         self.lastPos = self.selectedRange.location;
-        [self.matches sortUsingSelector:@selector(compare:)];
         [self.autocompleteTableView reloadData];
+        
+        [self.autocompleteTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:index] byExtendingSelection:NO];
+        [self.autocompleteTableView scrollRowToVisible:index];
         
         // Make the frame for the popover. We want it to shrink with a small number
         // of items to autocomplete but never grow above a certain limit when there
@@ -268,14 +225,11 @@
         [self.autocompleteTableView.enclosingScrollView setFrame:NSInsetRect(frame, POPOVER_PADDING, POPOVER_PADDING)];
         [self.autocompletePopover setContentSize:NSMakeSize(NSWidth(frame), NSHeight(frame))];
         
-        [self.autocompleteTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:0] byExtendingSelection:NO];
-        [self.autocompleteTableView scrollRowToVisible:0];
-        
         // We want to find the middle of the first character to show the popover.
         // firstRectForCharacterRange: will give us the rect at the begeinning of
         // the word, and then we need to find the half-width of the first character
         // to add to it.
-        NSRect rect = [self firstRectForCharacterRange:substringRange];
+        NSRect rect = [self firstRectForCharacterRange:substringRange actualRange:NULL];
         rect = [self.window convertRectFromScreen:rect];
         rect = [self convertRect:rect fromView:nil];
         NSString *firstChar = [self.substring substringToIndex:1];
@@ -288,39 +242,57 @@
     }
 }
 
-- (void)popoverDidShow:(NSNotification *)notification {
-    [self.window makeFirstResponder:self];
+- (NSArray *)completionsForPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)index {
+    if ([self.delegate respondsToSelector:@selector(textView:completions:forPartialWordRange:indexOfSelectedItem:)]) {
+        return [self.delegate textView:self completions:@[] forPartialWordRange:charRange indexOfSelectedItem:index];
+    }
+    return @[];
 }
 
 - (NSInteger)numberOfRowsInTableView:(NSTableView *)tableView {
     return self.matches.count;
 }
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    return self.matches[row];
-}
-
-- (void)tableView:(NSTableView *)tableView willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
-    ImageAndTextCell *imageAndTextCell = (ImageAndTextCell *)cell;
+- (NSView *)tableView:(NSTableView *)tableView viewForTableColumn:(NSTableColumn *)tableColumn row:(NSInteger)row {
+    NSTableCellView *cellView = [tableView makeViewWithIdentifier:@"MyView" owner:self];
+    if (cellView == nil) {
+        cellView = [[NSTableCellView alloc] initWithFrame:NSZeroRect];
+        NSTextField *textField = [[NSTextField alloc] initWithFrame:NSZeroRect];
+        [textField setBezeled:NO];
+        [textField setDrawsBackground:NO];
+        [textField setEditable:NO];
+        [textField setSelectable:NO];
+        [cellView addSubview:textField];
+        cellView.textField = textField;
+        if ([self.delegate respondsToSelector:@selector(textView:imageForCompletion:)]) {
+            NSImageView *imageView = [[NSImageView alloc] initWithFrame:NSZeroRect];
+            [imageView setImageFrameStyle:NSImageFrameNone];
+            [imageView setImageScaling:NSImageScaleNone];
+            [cellView addSubview:imageView];
+            cellView.imageView = imageView;
+        }
+        cellView.identifier = @"MyView";
+    }
     
-    [imageAndTextCell setDrawsBackground:NO];
-    [imageAndTextCell setImage:nil];
-    
-    NSMutableAttributedString *as = [[NSMutableAttributedString alloc] initWithString:imageAndTextCell.stringValue attributes:@{NSFontAttributeName:POPOVER_FONT, NSForegroundColorAttributeName:POPOVER_TEXTCOLOR}];
-    [imageAndTextCell setAttributedStringValue:as];
+    NSMutableAttributedString *as = [[NSMutableAttributedString alloc] initWithString:self.matches[row] attributes:@{NSFontAttributeName:POPOVER_FONT, NSForegroundColorAttributeName:POPOVER_TEXTCOLOR}];
     
     if (self.substring) {
-        NSRange range = [imageAndTextCell.stringValue rangeOfString:self.substring options:NSAnchoredSearch|NSCaseInsensitiveSearch];
+        NSRange range = [as.string rangeOfString:self.substring options:NSAnchoredSearch|NSCaseInsensitiveSearch];
         [as addAttribute:NSFontAttributeName value:POPOVER_BOLDFONT range:range];
-        [imageAndTextCell setAttributedStringValue:as];
     }
     
-    if ([[self delegate] respondsToSelector:@selector(imageForWord:)]) {
-        NSImage *image = [[self delegate] imageForWord:self.matches[row]];
-        if (image) {
-            [imageAndTextCell setImage:image];
-        }
+    [cellView.textField setAttributedStringValue:as];
+    
+    if ([self.delegate respondsToSelector:@selector(textView:imageForCompletion:)]) {
+        NSImage *image = [self.delegate textView:self imageForCompletion:self.matches[row]];
+        [cellView.imageView setImage:image];
     }
+    
+    return cellView;
+}
+
+- (NSTableRowView *)tableView:(NSTableView *)tableView rowViewForRow:(NSInteger)row {
+    return [[NCRAutocompleteTableRowView alloc] init];
 }
 
 @end

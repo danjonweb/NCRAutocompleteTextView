@@ -12,6 +12,7 @@
 @property (weak) IBOutlet NSWindow *window;
 @property (nonatomic, assign) IBOutlet NCRAutocompleteTextView *textView;
 @property (nonatomic, strong) NSMutableDictionary *imageDict;
+@property (nonatomic, strong) NSArray *wordlist;
 @end
 
 @implementation AppDelegate
@@ -21,7 +22,7 @@
     
     NSURL *url = [[NSBundle mainBundle] URLForResource:@"wordlist" withExtension:@"txt"];
     NSString *countriesString = [NSString stringWithContentsOfURL:url encoding:NSUTF8StringEncoding error:nil];
-    self.textView.wordlist = [countriesString componentsSeparatedByString:@"\n"];
+    self.wordlist = [countriesString componentsSeparatedByString:@"\n"];
     
     // Flag Icons by GoSquared (http://www.gosquared.com/)
     self.imageDict = [NSMutableDictionary dictionary];
@@ -37,12 +38,23 @@
     // Insert code here to tear down your application
 }
 
-- (NSImage *)imageForWord:(NSString *)word {
+- (NSImage *)textView:(NSTextView *)textView imageForCompletion:(NSString *)word {
     NSImage *image = self.imageDict[word];
     if (image) {
         return image;
     }
     return self.imageDict[@"Unknown"];
+}
+
+- (NSArray *)textView:(NSTextView *)textView completions:(NSArray *)words forPartialWordRange:(NSRange)charRange indexOfSelectedItem:(NSInteger *)index {
+    NSMutableArray *matches = [NSMutableArray array];
+    for (NSString *string in self.wordlist) {
+        if ([string rangeOfString:[[textView string] substringWithRange:charRange] options:NSAnchoredSearch|NSCaseInsensitiveSearch range:NSMakeRange(0, [string length])].location != NSNotFound) {
+            [matches addObject:string];
+        }
+    }
+    [matches sortUsingSelector:@selector(compare:)];
+    return matches;
 }
 
 @end
