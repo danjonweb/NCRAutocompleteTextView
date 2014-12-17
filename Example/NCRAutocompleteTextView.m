@@ -21,8 +21,8 @@
 #define POPOVER_WIDTH 250.0
 #define POPOVER_PADDING 0.0
 
-//#define POPOVER_APPEARANCE NSPopoverAppearanceHUD
-#define POPOVER_APPEARANCE NSPopoverAppearanceMinimal
+//#define POPOVER_APPEARANCE NSAppearanceNameVibrantDark
+#define POPOVER_APPEARANCE NSAppearanceNameVibrantLight
 
 #define POPOVER_FONT [NSFont fontWithName:@"Menlo" size:12.0]
 // The font for the characters that have already been typed
@@ -102,7 +102,7 @@
     [contentViewController setView:contentView];
     
     self.autocompletePopover = [[NSPopover alloc] init];
-    self.autocompletePopover.appearance = POPOVER_APPEARANCE;
+    self.autocompletePopover.appearance = [NSAppearance appearanceNamed:POPOVER_APPEARANCE];
     self.autocompletePopover.animates = NO;
     self.autocompletePopover.contentViewController = contentViewController;
     
