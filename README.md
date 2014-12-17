@@ -18,7 +18,7 @@ Known Issues
 ===
 For some reason when the list is scrolled, there is a dark spot under the scrollbar:
 
-[Redering bug](http://i.imgur.com/Kl1lYQI.png)
+![Rendering bug](http://i.imgur.com/Kl1lYQI.png)
 
 It's worse for the dark theme. I'm not sure how to work around this -- if anyone has any suggestions, let me know.
 
