@@ -166,7 +166,11 @@
     if (self.autocompleteTableView.selectedRow >= 0 && self.autocompleteTableView.selectedRow < self.matches.count) {
         NSString *string = [self.matches objectAtIndex:self.autocompleteTableView.selectedRow];
         NSInteger beginningOfWord = self.selectedRange.location - self.substring.length;
-        [self replaceCharactersInRange:NSMakeRange(beginningOfWord, self.substring.length) withString:string];
+        NSRange range = NSMakeRange(beginningOfWord, self.substring.length);
+        if ([self shouldChangeTextInRange:range replacementString:string]) {
+            [self replaceCharactersInRange:range withString:string];
+            [self didChangeText];
+        }
     }
     [self.autocompletePopover close];
 }
