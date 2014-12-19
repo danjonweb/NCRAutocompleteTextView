@@ -17,10 +17,11 @@ I have updated `NCRAutocompleteTextView` in several ways. First, if you tried to
 Known Issues
 ===
 - For some reason when the list is scrolled, there is a dark spot under the scrollbar:
-  
   ![Rendering bug](http://i.imgur.com/Kl1lYQI.png)
-      
+
   It's worse for the dark theme. I'm not sure how to work around this -- if anyone has any suggestions, let me know.
+
+- Undo is broken but this shouldn't be very hard to fix. Just need to add a shouldChangeTextInRange: and didChangeText call.
 
 NCRAutocompleteTextView (old, but still useful as a reference)
 =======================
