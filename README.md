@@ -21,7 +21,7 @@ Known Issues
 
   It's worse for the dark theme. I'm not sure how to work around this -- if anyone has any suggestions, let me know.
 
-- Undo is broken but this shouldn't be very hard to fix. Just need to add a shouldChangeTextInRange: and didChangeText call.
+- <strike>Undo is broken but this shouldn't be very hard to fix. Just need to add a shouldChangeTextInRange: and didChangeText call.</strike> This is fixed now.
 
 NCRAutocompleteTextView (old, but still useful as a reference)
 =======================
